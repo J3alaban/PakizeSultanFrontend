@@ -1,0 +1,9 @@
+version: "3.8"
+
+services:
+  pakizesultan-frontend:
+    build: .
+    container_name: pakizesultan-frontend
+    ports:
+      - "3005:80"
+    restart: unless-stopped
