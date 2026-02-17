@@ -1,88 +1,77 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Heart, Info } from 'lucide-react'; // ShoppingCart yerine Heart ve Info
+import { Heart, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
 
 const ProductCard = ({ product }) => {
     const { toast } = useToast();
 
+    // Güvenli veri eşleme
+    const name = product.title || product.name || "Eğitim Programı";
+    const description = product.description || product.shortDescription || "Program detayları hazırlanıyor...";
+    const ageGroup = product.brand || product.ageGroup || "Genel Katılım";
+    const displayImage = (product.images && product.images.length > 0)
+        ? product.images[0]
+        : "https://images.unsplash.com/photo-1587654711723-4446a8a2712f?q=80&w=800&auto=format&fit=crop";
+
     const handleInterestClick = (e) => {
         e.preventDefault();
         e.stopPropagation();
-        // Burada sepete eklemek yerine "İlgi Listesine Ekleme" veya "Bilgi Talebi" simüle edilebilir
         toast({
-            title: "Harika Bir Seçim! 🌟",
-            description: `${product.name} programımız hakkında sizinle iletişime geçeceğiz.`,
+            title: "İlginiz İçin Teşekkürler! 🌟",
+            description: `${name} programı için talebiniz alınmıştır.`,
         });
     };
 
     return (
         <motion.div
-            whileHover={{ scale: 1.03, y: -8 }}
+            whileHover={{ scale: 1.03, y: -5 }}
             whileTap={{ scale: 0.98 }}
-            transition={{ type: "spring", stiffness: 250, damping: 25 }}
-            className="group"
+            className="group h-full"
         >
-            <Link to={`/program/${product.id}`}>
-                <div className="bg-white rounded-[2rem] shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 border border-pink-50">
+
+                <div className="bg-white rounded-[2.5rem] shadow-sm hover:shadow-2xl hover:shadow-pink-100/50 transition-all duration-500 border border-slate-100 h-full flex flex-col overflow-hidden">
 
                     {/* Görsel Alanı */}
-                    <div className="relative overflow-hidden h-56 bg-blue-50">
+                    <div className="relative h-60 bg-slate-50 overflow-hidden">
                         <motion.img
-                            src={product.image}
-                            alt={product.name}
+                            src={displayImage}
+                            alt={name}
                             className="w-full h-full object-cover"
-                            whileHover={{ scale: 1.08 }}
-                            transition={{ duration: 0.5 }}
+                            whileHover={{ scale: 1.1 }}
+                            transition={{ duration: 0.6 }}
                         />
-                        {/* Yaş Grubu Rozeti (Badge) */}
-                        <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm text-[#FF69B4] px-4 py-1 rounded-full text-xs font-bold shadow-sm">
-                            {product.ageGroup || "3-6 Yaş"}
+                        <div className="absolute top-5 left-5 bg-white/90 backdrop-blur-md text-[#FF69B4] px-4 py-1.5 rounded-2xl text-xs font-black shadow-sm uppercase tracking-wider">
+                            {ageGroup}
                         </div>
-                        <div className="absolute inset-0 bg-gradient-to-t from-pink-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+
                     </div>
 
                     {/* İçerik Alanı */}
-                    <div className="p-6">
-                        <h3 className="text-2xl font-bold text-gray-800 mb-2 group-hover:text-[#FF69B4] transition-colors">
-                            {product.name}
+                    <div className="p-8 flex flex-col flex-grow text-left">
+                        <h3 className="text-2xl font-black text-gray-800 mb-3 group-hover:text-[#FF69B4] transition-colors leading-tight">
+                            {name}
                         </h3>
-                        <p className="text-gray-500 text-sm mb-6 line-clamp-2 leading-relaxed">
-                            {product.shortDescription}
+
+                        <p className="text-gray-500 text-sm mb-8 line-clamp-3 leading-relaxed flex-grow">
+                            {description}
                         </p>
 
-                        <div className="flex items-center justify-between gap-3">
-                            {/* Fiyat yerine Aylık Ücret veya Bilgi Butonu */}
-                            <div className="flex flex-col">
-                                <span className="text-xs text-gray-400 font-medium">Aylık Başlayan</span>
-                                <span className="text-xl font-extrabold text-[#87CEFA]">
-                                    ₺{product.price.toLocaleString('tr-TR')}
-                                </span>
-                            </div>
-
-                            <div className="flex gap-2">
-                                <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
-                                    <Button
-                                        onClick={handleInterestClick}
-                                        className="bg-pink-100 hover:bg-pink-500 text-pink-500 hover:text-white rounded-full w-10 h-10 p-0 transition-colors"
-                                        size="icon"
-                                    >
-                                        <Heart className="h-5 w-5 fill-current" />
-                                    </Button>
-                                </motion.div>
-                            </div>
+                        <div className="pt-6 border-t border-slate-50">
+                        <Link to="/programlar">
+                                                    <Button
+                                                        className="w-full bg-[#87CEFA] hover:bg-[#FF69B4] text-white rounded-[1.5rem] font-black py-7 shadow-lg shadow-blue-100 hover:shadow-pink-100 transition-all duration-300 flex items-center justify-center gap-2 group/btn"
+                                                    >
+                                                        Detayları Keşfet
+                                                        <ArrowRight size={18} className="group-hover/btn:translate-x-1 transition-transform" />
+                                                    </Button>
+                                                </Link>
                         </div>
-
-                        <Button
-                            className="w-full mt-6 bg-[#87CEFA] hover:bg-[#60b2e6] text-white rounded-2xl font-bold py-6 shadow-md shadow-blue-100 transition-all"
-                        >
-                            Programı İncele
-                        </Button>
                     </div>
                 </div>
-            </Link>
+
         </motion.div>
     );
 };

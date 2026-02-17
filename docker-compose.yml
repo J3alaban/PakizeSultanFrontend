@@ -5,5 +5,5 @@ services:
     build: .
     container_name: pakizesultan-frontend
     ports:
-      - "3005:80"
+      - "3007:80"
     restart: unless-stopped

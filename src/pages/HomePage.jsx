@@ -14,6 +14,8 @@ import OfferCard from '@/components/OfferCard';
 import ReviewCard from '@/components/ReviewCard';
 import FooterTop from '@/components/FooterTop';
 import Footer from '@/components/Footer';
+import Classes from '@/components/Classes';
+
 
 const HomePage = () => {
     // Animasyon varyantları
@@ -52,36 +54,28 @@ const HomePage = () => {
                     </div>
                 </section>
 
-                {/* CLASSES (Eğitim Programları) */}
-                <section id="classes" className="py-20 px-4 bg-white/60 backdrop-blur-md border-y border-pink-50">
-                    <div className="max-w-7xl mx-auto text-center">
-                        <motion.div
-                            initial={{ opacity: 0, y: 20 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true }}
-                        >
-                            <h2 className="text-4xl md:text-5xl font-black text-gray-800 mb-4">Eğitim Programlarımız</h2>
-                            <p className="text-gray-600 text-lg mb-12">Yaş gruplarına özel gelişimsel programlar</p>
-                        </motion.div>
 
-                        <motion.div
-                            variants={containerVariants}
-                            initial="hidden"
-                            whileInView="visible"
-                            viewport={{ once: true }}
-                            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
-                        >
-                            {classes.map((item) => (
-                                <motion.div key={item.id} variants={itemVariants}>
-                                    <ProductCard product={item} />
-                                </motion.div>
-                            ))}
-                        </motion.div>
-                    </div>
-                </section>
+{/* CLASSES (Eğitim Programları) */}
+<section className="py-20 px-4 bg-white/60 backdrop-blur-md border-y border-pink-50">
+    <div className="max-w-7xl mx-auto text-center">
+        <Classes
+            // Sadece ilk 6 öğeyi gönderiyoruz
+            classes={classes.slice(0, 6)}
+            containerVariants={containerVariants}
+            itemVariants={itemVariants}
+        />
+    </div>
+</section>
+
+
+
+
+
+
 
                 {/* ARA BANNER (Aksiyon Çağrısı) */}
                 <Banner />
+
 
                 {/* OFFERS (Kayıt Avantajları) */}
                 <section className="py-20 px-4 bg-gray-50/50">

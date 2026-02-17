@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { X, Mail, Lock, Loader2, AlertCircle, ArrowRight, Baby, CheckCircle2 } from 'lucide-react';
+import { Config } from "../helpers/Config";
 
 const LoginModal = ({ isOpen, onClose, onLoginSuccess }) => {
     const [form, setForm] = useState({ email: '', password: '' });
@@ -26,17 +27,21 @@ const LoginModal = ({ isOpen, onClose, onLoginSuccess }) => {
         if (!submit) return;
 
         setLoading(true);
-        fetch("http://localhost:8080/api/v1/auth/login", {
+        fetch(`${Config.api.baseUrl}/api/v1/auth/login`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(form),
         })
+
+
             .then(res => {
                 if (!res.ok) throw new Error("Giriş bilgileri hatalı.");
                 return res.json();
             })
             .then(data => {
-                const userData = {  };
+                const userData = {
+                    role : data.role
+                    };
                 localStorage.setItem("user", JSON.stringify(userData));
                 setIsSuccess(true);
                 setTimeout(() => {

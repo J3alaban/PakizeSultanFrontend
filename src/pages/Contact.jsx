@@ -2,58 +2,33 @@ import React, { useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { motion } from 'framer-motion';
 import { Mail, Phone, MapPin, Send, MessageCircle } from 'lucide-react';
-import { useToast } from '@/components/ui/use-toast';
 import { Button } from '@/components/ui/button';
 
 const Contact = () => {
-    const { toast } = useToast();
     const [formData, setFormData] = useState({
         name: '',
-        email: '',
+        email: '', // Mailto'da gönderen kısmında görünmesi için tutuyoruz
         subject: '',
         message: ''
     });
-    const [errors, setErrors] = useState({});
 
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData(prev => ({ ...prev, [name]: value }));
-        if (errors[name]) {
-            setErrors(prev => ({ ...prev, [name]: '' }));
-        }
     };
 
-    const validateForm = () => {
-        const newErrors = {};
-        if (!formData.name.trim()) newErrors.name = 'İsim gereklidir';
-        if (!formData.email.trim()) {
-            newErrors.email = 'E-posta gereklidir';
-        } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-            newErrors.email = 'Geçerli bir e-posta adresi girin';
-        }
-        if (!formData.subject.trim()) newErrors.subject = 'Konu seçimi gereklidir';
-        if (!formData.message.trim() || formData.message.length < 10) {
-            newErrors.message = 'Lütfen bize biraz daha detay verin (en az 10 karakter)';
-        }
-        setErrors(newErrors);
-        return Object.keys(newErrors).length === 0;
-    };
-
-    const handleSubmit = (e) => {
+    // Formu Mailto linkine dönüştüren fonksiyon
+    const handleMailRedirect = (e) => {
         e.preventDefault();
-        if (validateForm()) {
-            toast({
-                title: "Mesajınız Bize Ulaştı! ❤️",
-                description: "En kısa sürede sizi arayacağız.",
-            });
-            setFormData({ name: '', email: '', subject: '', message: '' });
-        } else {
-            toast({
-                title: "Eksik Bilgi! 🐣",
-                description: "Lütfen formu kontrol edip tekrar deneyin.",
-                variant: "destructive"
-            });
-        }
+        const targetEmail = "demirayhidrolik06@gmail.com";
+        const subject = encodeURIComponent(`${formData.subject || 'İletişim'} - ${formData.name}`);
+        const body = encodeURIComponent(
+            `Veli Adı: ${formData.name}\n` +
+            `E-posta: ${formData.email}\n` +
+            `Mesaj: ${formData.message}`
+        );
+
+        window.location.href = `mailto:${targetEmail}?subject=${subject}&body=${body}`;
     };
 
     return (
@@ -65,7 +40,7 @@ const Contact = () => {
 
             <div className="min-h-screen bg-gradient-to-b from-blue-50 via-white to-pink-50 py-20 px-4">
                 <div className="max-w-6xl mx-auto">
-                    {/* Header */}
+                    {/* Header - Renkler Korundu */}
                     <motion.div
                         initial={{ opacity: 0, scale: 0.9 }}
                         animate={{ opacity: 1, scale: 1 }}
@@ -81,18 +56,15 @@ const Contact = () => {
                     </motion.div>
 
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 items-start">
-                        {/* Contact Info Cards */}
+                        {/* Sol Kartlar - Renkler Korundu */}
                         <div className="space-y-6">
                             {[
                                 { icon: Phone, title: 'Bizi Arayın', content: '+90 544 594 64 33', color: 'bg-green-100 text-green-600' },
-                                { icon: Mail, title: 'E-posta Gönderin', content: 'merhaba@kucukadimlar.com', color: 'bg-blue-100 text-blue-600' },
-                                { icon: MapPin, title: 'Ziyaret Edin', content: 'Güneşli Sokak No:42, İnegöl/Bursa', color: 'bg-pink-100 text-pink-600' }
+                                { icon: Mail, title: 'E-posta Gönderin', content: 'demirayhidrolik06@gmail.com', color: 'bg-blue-100 text-blue-600' },
+                                { icon: MapPin, title: 'Ziyaret Edin', content: 'Saray Fatih Mah. Bozkurt Cad. No:52 Pursaklar / Ankara', color: 'bg-pink-100 text-pink-600' }
                             ].map((item, idx) => (
                                 <motion.div
                                     key={idx}
-                                    initial={{ opacity: 0, x: -50 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    transition={{ delay: idx * 0.1 }}
                                     whileHover={{ y: -5 }}
                                     className="bg-white p-6 rounded-[2rem] shadow-sm border border-gray-100 flex items-center gap-6"
                                 >
@@ -106,17 +78,13 @@ const Contact = () => {
                                 </motion.div>
                             ))}
 
-                            {/* Sosyal Medya Quick Link */}
-
-
+                            {/* WhatsApp Alanı - Orijinal Gradyan Korundu */}
                             <div className="bg-gradient-to-br from-blue-400 to-blue-600 p-8 rounded-[2rem] text-white">
                                 <MessageCircle size={32} className="mb-4" />
                                 <h3 className="text-xl font-bold mb-2">WhatsApp Destek</h3>
                                 <p className="text-blue-100 text-sm mb-4">Hızlı bilgi almak için bize WhatsApp'tan yazabilirsiniz.</p>
-
-                                {/* Gerçek yönlendirme yapan buton */}
                                 <a
-                                    href="https://wa.me/905445946433" // Buraya telefon numaranı başında + olmadan yaz
+                                    href="https://wa.me/905445946433"
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className="inline-block bg-white text-blue-600 px-6 py-2 rounded-full font-bold text-sm transition-transform hover:scale-105"
@@ -124,25 +92,23 @@ const Contact = () => {
                                     Hemen Yazın
                                 </a>
                             </div>
-
-
                         </div>
 
-                        {/* Modern Form */}
+                        {/* Form Alanı - Orijinal Şeffaf/Pembe Stil Korundu */}
                         <motion.div
                             initial={{ opacity: 0, y: 50 }}
                             animate={{ opacity: 1, y: 0 }}
                             className="lg:col-span-2 bg-white rounded-[3rem] shadow-xl shadow-pink-100/50 p-8 md:p-12 border border-pink-50"
                         >
-                            <form onSubmit={handleSubmit} className="space-y-6">
+                            <form onSubmit={handleMailRedirect} className="space-y-6">
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div className="space-y-2">
                                         <label className="text-sm font-bold text-gray-700 ml-2">Veli Adı Soyadı</label>
                                         <input
                                             name="name"
-                                            value={formData.name}
+                                            required
                                             onChange={handleChange}
-                                            className={`w-full px-6 py-4 rounded-2xl bg-gray-50 border-2 transition-all outline-none ${errors.name ? 'border-red-300' : 'border-transparent focus:border-blue-200 focus:bg-white'}`}
+                                            className="w-full px-6 py-4 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-blue-200 focus:bg-white transition-all outline-none"
                                             placeholder="Adınız..."
                                         />
                                     </div>
@@ -150,9 +116,10 @@ const Contact = () => {
                                         <label className="text-sm font-bold text-gray-700 ml-2">E-posta Adresi</label>
                                         <input
                                             name="email"
-                                            value={formData.email}
+                                            type="email"
+                                            required
                                             onChange={handleChange}
-                                            className={`w-full px-6 py-4 rounded-2xl bg-gray-50 border-2 transition-all outline-none ${errors.email ? 'border-red-300' : 'border-transparent focus:border-blue-200 focus:bg-white'}`}
+                                            className="w-full px-6 py-4 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-blue-200 focus:bg-white transition-all outline-none"
                                             placeholder="ornek@mail.com"
                                         />
                                     </div>
@@ -162,15 +129,15 @@ const Contact = () => {
                                     <label className="text-sm font-bold text-gray-700 ml-2">İlgilendiğiniz Konu</label>
                                     <select
                                         name="subject"
-                                        value={formData.subject}
+                                        required
                                         onChange={handleChange}
                                         className="w-full px-6 py-4 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-blue-200 focus:bg-white transition-all outline-none appearance-none"
                                     >
                                         <option value="">Seçiniz...</option>
-                                        <option value="kayit">Yeni Kayıt Hakkında</option>
-                                        <option value="bilgi">Eğitim Programı Hakkında Bilgi</option>
-                                        <option value="ziyaret">Okul Ziyareti Randevusu</option>
-                                        <option value="diger">Diğer</option>
+                                        <option value="Kayit">Yeni Kayıt Hakkında</option>
+                                        <option value="Bilgi">Eğitim Programı Hakkında Bilgi</option>
+                                        <option value="Ziyaret">Okul Ziyareti Randevusu</option>
+                                        <option value="Diger">Diğer</option>
                                     </select>
                                 </div>
 
@@ -178,10 +145,10 @@ const Contact = () => {
                                     <label className="text-sm font-bold text-gray-700 ml-2">Mesajınız</label>
                                     <textarea
                                         name="message"
-                                        value={formData.message}
+                                        required
                                         onChange={handleChange}
                                         rows="5"
-                                        className={`w-full px-6 py-4 rounded-2xl bg-gray-50 border-2 transition-all outline-none resize-none ${errors.message ? 'border-red-300' : 'border-transparent focus:border-blue-200 focus:bg-white'}`}
+                                        className="w-full px-6 py-4 rounded-2xl bg-gray-50 border-2 border-transparent focus:border-blue-200 focus:bg-white transition-all outline-none resize-none"
                                         placeholder="Çocuğunuzun yaşını ve merak ettiklerinizi buraya yazabilirsiniz..."
                                     />
                                 </div>
